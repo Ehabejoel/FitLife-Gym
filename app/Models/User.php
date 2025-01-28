@@ -9,7 +9,7 @@ class User extends Authenticatable
     use Notifiable;
 
     protected $fillable = [
-        'name', 'email', 'password', 'role_id', 'phone', 'address', 'profile_photo', 'status'
+        'name', 'email', 'password', 'role_id', 'phone', 'address', 'profile_photo', 'status', 'role'
     ];
 
     protected $hidden = [
@@ -61,5 +61,13 @@ class User extends Authenticatable
     public function trainingSessions()
     {
         return $this->hasMany(TrainingSession::class, 'trainer_id');
+    }
+
+    /**
+     * Get the class bookings for the user.
+     */
+    public function bookings()
+    {
+        return $this->hasMany(ClassBooking::class);
     }
 }

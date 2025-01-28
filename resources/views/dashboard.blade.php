@@ -1,75 +1,184 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('My Fitness Dashboard') }}
+            </h2>
+            <span class="text-sm text-gray-500">{{ now()->format('l, F j, Y') }}</span>
+        </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             @if(!auth()->user()->hasActiveSubscription())
-                {{-- Show this for users without active membership --}}
-                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                <div class="bg-yellow-50 border border-yellow-100 rounded-lg p-4">
                     <div class="flex">
-                        <div class="ml-3">
-                            <h3 class="text-sm font-medium text-yellow-800">Complete Your Membership</h3>
-                            <p class="text-sm text-yellow-700 mt-2">You're registered but haven't activated a membership yet.</p>
-                            <div class="mt-4">
-                                <a href="{{ route('membership.plans') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700">
-                                    View Membership Plans
-                                </a>
-                            </div>
-                        </div>
+                        <p class="text-sm text-yellow-700">
+                            <span class="font-medium">Start your fitness journey today!</span>
+                            <a href="{{ route('membership.plans') }}" class="ml-2 font-semibold text-yellow-700 underline hover:text-yellow-800">
+                                View plans →
+                            </a>
+                        </p>
                     </div>
                 </div>
             @else
-                {{-- Show this for active members --}}
-                <div class="bg-green-50 border-l-4 border-green-400 p-4 mb-6">
-                    <div class="flex">
-                        <div class="ml-3">
-                            <h3 class="text-sm font-medium text-green-800">Active Membership</h3>
-                            <p class="text-sm text-green-700 mt-2">
-                                Your {{ auth()->user()->subscription->plan->name }} plan is active
-                                @if(auth()->user()->subscription->expires_at)
-                                    until {{ auth()->user()->subscription->expires_at->format('M d, Y') }}
-                                @endif
-                            </p>
+                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <span class="flex-shrink-0 h-2 w-2 bg-green-400 rounded-full"></span>
+                            <span class="text-sm text-gray-600">Active Member</span>
+                            <span class="text-sm font-medium text-gray-900">{{ auth()->user()->subscription->plan->name }} Plan</span>
                         </div>
+                        <span class="text-xs text-gray-500">Valid until {{ auth()->user()->subscription->expires_at?->format('M d, Y') ?? 'Ongoing' }}</span>
                     </div>
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <h3 class="text-lg font-semibold mb-4">Welcome back, {{ Auth::user()->name }}! 👋</h3>
-                    <p class="mb-6 text-gray-600">Here's your fitness hub - everything you need to manage your gym membership.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-blue-500">
-                            <h4 class="font-medium mb-2">Your Membership</h4>
-                            <p class="text-sm text-gray-600 mb-3">Manage your gym membership and plans</p>
-                            <ul class="space-y-2">
-                                <li><a href="{{ route('membership.plans') }}" class="text-blue-600 hover:underline">🏋️‍♂️ View Available Plans</a></li>
-                                <li><a href="{{ route('membership.subscriptions') }}" class="text-blue-600 hover:underline">📅 My Current Plan</a></li>
-                            </ul>
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-blue-50 rounded-lg">
+                            <svg class="h-6 w-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
                         </div>
-                        
-                        <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-green-500">
-                            <h4 class="font-medium mb-2">Personal Area</h4>
-                            <p class="text-sm text-gray-600 mb-3">Manage your profile and track progress</p>
-                            <ul class="space-y-2">
-                                <li><a href="{{ route('member.profile') }}" class="text-blue-600 hover:underline">👤 My Profile & Settings</a></li>
-                                <li><a href="{{ route('member.attendance') }}" class="text-blue-600 hover:underline">📊 My Workout History</a></li>
-                            </ul>
+                        <div class="ml-4">
+                            <h4 class="text-sm font-medium text-gray-500">Last Check-in</h4>
+                            <p class="text-lg font-semibold text-gray-900">2 days ago</p>
                         </div>
-                        
-                        <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-purple-500">
-                            <h4 class="font-medium mb-2">Training Schedule</h4>
-                            <p class="text-sm text-gray-600 mb-3">View and book your training sessions</p>
-                            <ul class="space-y-2">
-                                <li><a href="{{ route('member.classes') }}" class="text-blue-600 hover:underline">📅 Class Schedule</a></li>
-                                <li><a href="{{ route('member.training.sessions') }}" class="text-blue-600 hover:underline">🎯 Book a Training Session</a></li>
-                            </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-purple-50 rounded-lg">
+                            <svg class="h-6 w-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="text-sm font-medium text-gray-500">Classes Booked</h4>
+                            <p class="text-lg font-semibold text-gray-900">3 upcoming</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-indigo-50 rounded-lg">
+                            <svg class="h-6 w-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="text-sm font-medium text-gray-500">Workout Streak</h4>
+                            <p class="text-lg font-semibold text-gray-900">5 days</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-pink-50 rounded-lg">
+                            <svg class="h-6 w-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="text-sm font-medium text-gray-500">Fitness Score</h4>
+                            <p class="text-lg font-semibold text-gray-900">85/100</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Quick Actions -->
+                <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                        <div class="space-y-4">
+                            <a href="{{ route('member.classes') }}" class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                <span class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                                    📅
+                                </span>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-900">Book a Class</p>
+                                    <p class="text-xs text-gray-500">View schedule and reserve your spot</p>
+                                </div>
+                                <svg class="ml-auto h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+
+                            <a href="{{ route('member.training.sessions') }}" class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                <span class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-purple-100 text-purple-600">
+                                    🎯
+                                </span>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-900">Personal Training</p>
+                                    <p class="text-xs text-gray-500">Schedule a session with a trainer</p>
+                                </div>
+                                <svg class="ml-auto h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+
+                            <a href="{{ route('member.profile') }}" class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                <span class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-green-100 text-green-600">
+                                    📊
+                                </span>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-900">Track Progress</p>
+                                    <p class="text-xs text-gray-500">Update measurements and goals</p>
+                                </div>
+                                <svg class="ml-auto h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Upcoming Classes</h3>
+                        <div class="space-y-4">
+                            @for ($i = 0; $i < 3; $i++)
+                                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
+                                        <span class="text-sm font-medium">{{ ['MON', 'WED', 'FRI'][$i] }}</span>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-900">{{ ['HIIT Training', 'Yoga Flow', 'Strength & Conditioning'][$i] }}</p>
+                                        <p class="text-xs text-gray-500">{{ ['10:00 AM', '2:00 PM', '4:00 PM'][$i] }} • {{ ['Studio A', 'Studio B', 'Main Floor'][$i] }}</p>
+                                    </div>
+                                </div>
+                            @endfor
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Announcements -->
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Announcements</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-blue-50 rounded-lg border border-blue-100">
+                            <span class="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">New</span>
+                            <h4 class="mt-2 text-sm font-medium text-gray-900">Holiday Schedule Changes</h4>
+                            <p class="mt-1 text-sm text-gray-600">Modified class schedule for the upcoming holiday. Check the updated timetable.</p>
+                        </div>
+
+                        <div class="p-4 bg-purple-50 rounded-lg border border-purple-100">
+                            <span class="text-xs font-medium text-purple-600 bg-purple-100 px-2 py-1 rounded">Event</span>
+                            <h4 class="mt-2 text-sm font-medium text-gray-900">Fitness Challenge</h4>
+                            <p class="mt-1 text-sm text-gray-600">Join our monthly fitness challenge and win exciting prizes!</p>
+                        </div>
+
+                        <div class="p-4 bg-green-50 rounded-lg border border-green-100">
+                            <span class="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded">Update</span>
+                            <h4 class="mt-2 text-sm font-medium text-gray-900">New Equipment</h4>
+                            <p class="mt-1 text-sm text-gray-600">We've added new equipment to our strength training area.</p>
                         </div>
                     </div>
                 </div>

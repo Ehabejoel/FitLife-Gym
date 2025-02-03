@@ -11,7 +11,7 @@ class CreateClassBookingsTable extends Migration
         Schema::create('class_bookings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('class_id')->constrained('fitness_classes')->onDelete('cascade');
+            $table->foreignId('class_session_id')->constrained('class_sessions')->onDelete('cascade');
             $table->string('status')->default('confirmed');
             $table->timestamp('booking_date');
             $table->timestamps();

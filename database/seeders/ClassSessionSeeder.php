@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\ClassSession;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ClassSessionSeeder extends Seeder
 {
@@ -22,8 +23,17 @@ class ClassSessionSeeder extends Seeder
 
     public function run()
     {
-        // Clear existing class sessions
-        ClassSession::truncate();
+        // Disable foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
+        // First truncate the dependent table
+        DB::table('class_bookings')->truncate();
+        
+        // Now safe to truncate class_sessions
+        DB::table('class_sessions')->truncate();
+
+        // Re-enable foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
         
         // Get or create instructors
         $instructors = [

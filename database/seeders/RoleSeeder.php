@@ -15,8 +15,8 @@ class RoleSeeder extends Seeder
                 'slug' => 'admin',
             ],
             [
-                'name' => 'Instructor',
-                'slug' => 'instructor',
+                'name' => 'Trainer',
+                'slug' => 'trainer',
             ],
             [
                 'name' => 'Member',

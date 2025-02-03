@@ -6,7 +6,8 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\StaffManagementController;
 use App\Http\Controllers\Admin\EquipmentController;
 use App\Http\Controllers\Admin\FacilityController;
-use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Member\ProfileController as MemberProfileController;
 use App\Http\Controllers\Member\ClassBookingController;
 use App\Http\Controllers\Member\AttendanceController;
@@ -14,14 +15,15 @@ use App\Http\Controllers\Member\TrainingSessionController;  // Updated namespace
 use App\Http\Controllers\Training\TrainerController;
 use App\Http\Controllers\Membership\MembershipController;
 use Illuminate\Support\Facades\Route;
+use App\Models\Trainer;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     // Profile routes
@@ -58,15 +60,19 @@ Route::middleware('auth')->group(function () {
     });
 
     // Trainer Routes
-    Route::prefix('trainer')->name('trainer.')->middleware('trainer.access')->group(function () {
+    Route::prefix('trainer')->name('trainer.')->middleware(['auth', 'trainer'])->group(function () {
+        Route::get('/dashboard', [TrainerController::class, 'dashboard'])->name('dashboard');
         Route::get('/schedule', [TrainerController::class, 'schedule'])->name('schedule');
         Route::post('/sessions', [TrainerController::class, 'createSession'])->name('sessions.create');
+        Route::get('/clients/new', [TrainerController::class, 'newClient'])->name('clients.new');
+        Route::get('/sessions/create', [TrainerController::class, 'createSessionForm'])->name('sessions.create');
+        Route::get('/progress/reports', [TrainerController::class, 'progressReports'])->name('progress.reports');
     });
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     
     // User Management
     Route::resource('users', UserManagementController::class);

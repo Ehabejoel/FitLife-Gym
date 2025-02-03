@@ -59,7 +59,7 @@
                         </div>
                         <div class="ml-4">
                             <h4 class="text-sm font-medium text-gray-500">Classes Booked</h4>
-                            <p class="text-lg font-semibold text-gray-900">3 upcoming</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ $classesCount ?? 0 }} upcoming</p>
                         </div>
                     </div>
                 </div>
@@ -144,17 +144,33 @@
                     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Upcoming Classes</h3>
                         <div class="space-y-4">
-                            @for ($i = 0; $i < 3; $i++)
+                            @forelse($upcomingClasses as $class)
                                 <div class="flex items-center p-3 bg-gray-50 rounded-lg">
                                     <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
-                                        <span class="text-sm font-medium">{{ ['MON', 'WED', 'FRI'][$i] }}</span>
+                                        <span class="text-sm font-medium">{{ $class->start_time->format('D') }}</span>
                                     </div>
                                     <div class="ml-4">
-                                        <p class="text-sm font-medium text-gray-900">{{ ['HIIT Training', 'Yoga Flow', 'Strength & Conditioning'][$i] }}</p>
-                                        <p class="text-xs text-gray-500">{{ ['10:00 AM', '2:00 PM', '4:00 PM'][$i] }} • {{ ['Studio A', 'Studio B', 'Main Floor'][$i] }}</p>
+                                        <p class="text-sm font-medium text-gray-900">{{ $class->class_name }}</p>
+                                        <p class="text-xs text-gray-500">
+                                            {{ $class->start_time->format('g:i A') }} • 
+                                            {{ $class->instructor->name }}
+                                        </p>
                                     </div>
+                                    <form method="POST" action="{{ route('member.classes.cancel', $class) }}" class="ml-auto">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-800 text-sm" 
+                                                onclick="return confirm('Are you sure you want to cancel this class?')">
+                                            Cancel
+                                        </button>
+                                    </form>
                                 </div>
-                            @endfor
+                            @empty
+                                <div class="text-center py-4 text-gray-500">
+                                    <p>No upcoming classes booked</p>
+                                    <a href="{{ route('member.classes') }}" class="text-blue-500 hover:underline text-sm">Book a class</a>
+                                </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>

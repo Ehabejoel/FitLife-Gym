@@ -1,16 +1,22 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Trainer extends Model
 {
     protected $fillable = [
-        'name', 'specialization', 'experience', 'phone', 'email', 'status'
+        'name',
+        'email',
+        'phone',
+        'specialization',
+        'user_id'
     ];
 
-    public function subscriptions()
+    public function trainingSessions(): HasMany
     {
-        return $this->hasMany(Subscription::class);
+        return $this->hasMany(TrainingSession::class);
     }
 }

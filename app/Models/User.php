@@ -3,17 +3,24 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasRoles;
 
     protected $fillable = [
-        'name', 'email', 'password', 'role_id', 'phone', 'address', 'profile_photo', 'status', 'role'
+        'name', 'email', 'password', 'role_id', 'phone', 'address', 'profile_photo', 'status', 'role', 'specialties', 'bio'
     ];
 
     protected $hidden = [
         'password', 'remember_token',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'specialties' => 'array',
     ];
 
     public function subscriptions()
@@ -69,5 +76,15 @@ class User extends Authenticatable
     public function bookings()
     {
         return $this->hasMany(ClassBooking::class);
+    }
+
+    public function trainer()
+    {
+        return $this->hasOne(Trainer::class);
+    }
+
+    public function isTrainer()
+    {
+        return $this->role === 'trainer';
     }
 }

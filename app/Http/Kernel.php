@@ -44,9 +44,10 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // Custom gym middleware
-        'admin' => \App\Http\Controllers\Middleware\AdminAccess::class,
-        'trainer' => \App\Http\Controllers\Middleware\TrainerAccess::class,
-        'member' => \App\Http\Controllers\Middleware\MemberAccess::class,
+        'admin' => \App\Http\Middleware\AdminAccess::class,
+        'trainer' => \App\Http\Middleware\TrainerMiddleware::class,
+        'trainer.access' => \App\Http\Middleware\TrainerAccess::class,
+        'member' => \App\Http\Middleware\MemberAccess::class,
     ];
 
     protected $middlewarePriority = [

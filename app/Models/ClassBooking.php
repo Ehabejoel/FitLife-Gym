@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ClassBooking extends Model
 {
+    protected $table = 'class_bookings';
+
     protected $fillable = [
         'user_id',
-        'class_id',
+        'class_session_id', // Changed from class_id
         'status',
         'booking_date',
     ];
@@ -27,10 +29,10 @@ class ClassBooking extends Model
     }
 
     /**
-     * Get the class that was booked.
+     * Get the class session that was booked.
      */
-    public function class(): BelongsTo
+    public function classSession(): BelongsTo
     {
-        return $this->belongsTo(FitnessClass::class, 'class_id');
+        return $this->belongsTo(ClassSession::class, 'class_session_id');
     }
 }

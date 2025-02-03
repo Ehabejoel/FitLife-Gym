@@ -30,6 +30,16 @@ class ClassSession extends Model
         return $query->where('start_time', '>', now())->orderBy('start_time');
     }
 
+    public function scopeUserUpcomingBookings($query, $userId)
+    {
+        return $query->select('class_sessions.*')
+            ->join('class_bookings', 'class_sessions.id', '=', 'class_bookings.class_session_id')
+            ->where('class_bookings.user_id', $userId)
+            ->where('class_sessions.start_time', '>', now())
+            ->orderBy('class_sessions.start_time')
+            ->limit(3);
+    }
+
     public function hasSpace()
     {
         return $this->current_bookings < $this->capacity;
